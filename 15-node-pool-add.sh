@@ -1,5 +1,8 @@
 #!bin/bash
 
+kubectl patch svc istio-ingressgateway -n istio-system  -p '{"spec":{"type":"LoadBalancer"}}'
+kubectl -n istio-system get svc istio-ingressgateway
+
 rm gpu-config.yaml
 cat <<EOF | tee gpu-config.yaml
 name: tanzu-dkube-gpu
