@@ -13,3 +13,9 @@ kubectl logs -l job-name=dkube-helm-installer --follow --tail=-1 && kubectl wait
 
 kubectl patch svc istio-ingressgateway -n istio-system  -p '{"spec":{"type":"LoadBalancer"}}'
 kubectl -n istio-system get svc istio-ingressgateway
+
+echo
+echo "*** LOG INTO BASTION ***"
+echo
+echo "*** git clone https://github.com/nycpivot/tanzu-dkube.git ***"
+echo
