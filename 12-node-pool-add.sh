@@ -14,6 +14,6 @@ labels:
   dkube: gpu
 EOF
 	
-tanzu cluster node-pool set tanzu-dkube-demo -f gpu-config.yaml
-tanzu cluster node-pool list tanzu-dkube-demo
+tanzu cluster node-pool set $cluster_name -f gpu-config.yaml
+tanzu cluster node-pool list $cluster_name
 
