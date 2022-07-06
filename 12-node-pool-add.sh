@@ -1,5 +1,9 @@
 #!bin/bash
 
+read -p "Cluster Name: " cluster_name
+
+kubectl config use-context ${cluster_name}-admin@${cluster_name}
+
 rm gpu-config.yaml
 cat <<EOF | tee gpu-config.yaml
 name: tanzu-dkube-gpu
@@ -12,3 +16,4 @@ EOF
 	
 tanzu cluster node-pool set tanzu-dkube-demo -f gpu-config.yaml
 tanzu cluster node-pool list tanzu-dkube-demo
+
