@@ -1,12 +1,23 @@
 #!bin/bash
 
-read -p "Registry Username: " user
-read -p "Registry Password: " pass
+read -p "Docker Username: " docker_user
+read -p "Docker Password: " docker_pass
+read -p "DKube Version (3.2.0.1): " dkube_version
+
+if [[ -z $dkube_version ]]
+then
+	dkube_version=3.2.0.1
+fi
+
+sudo docker login -u $docker_user -p $docker_pass
+sudo docker run --rm -it -v $HOME/.dkube:/root/.dkube ocdr/dkubeadm:${dkube_version} init
 
 helm repo add dkube-helm https://oneconvergence.github.io/dkube-helm
 helm repo update
 
 #helm show values dkube-helm/dkube-deployer > values.yaml
+
+#FOR VALUES, GOTO https://dkube.io/unlinked/install2_1/Install-Advanced.html#install-advanced
 
 rm values.yaml
 cat <<EOF | tee values.yaml
@@ -48,10 +59,10 @@ registry:
     name: "docker.io/ocdr"
 
     # Container registry username
-    username: "${user}"
+    username: "${docker_user}"
 
     # Container registry password
-    password: "${pass}"
+    password: "${docker_pass}"
 
 optional:
     storage:
@@ -263,4 +274,27 @@ optional:
     # eg: IAMRole: "iam.amazonaws.com/role: arn:aws:iam::123456789012:role/myrole"
     IAMRole: ""
 EOF
+
+helm install -f values.yaml tanzu-dkube dkube-helm/dkube-deployer
+
+sleep 15
+
+kubectl wait --for=condition=ready --timeout=5m pod -l job-name=dkube-helm-installer
+kubectl logs -l job-name=dkube-helm-installer --follow --tail=-1 && kubectl wait --for=condition=complete --timeout=30m job/dkube-helm-installer
+
+kubectl patch svc istio-ingressgateway -n istio-system  -p '{"spec":{"type":"LoadBalancer"}}'
+
+sleep 30
+kubectl -n istio-system get svc istio-ingressgateway
+
+aws ec2 describe-instances | jq -r '.Reservations[].Instances[] | .PublicIpAddress'+\"\ \"+(.Tags[] | select(.Key == \"Name\").Value) | grep bastion
+
+read -p "Bastion IP: " bastion_ip
+
+ssh $bastion_ip -i 
+echo
+echo "*** LOG INTO BASTION ***"
+echo
+echo "*** git clone https://github.com/nycpivot/tanzu-dkube.git ***"
+echo
 
