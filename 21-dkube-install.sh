@@ -1,5 +1,6 @@
 #!bin/bash
 
+read -p "Azure subscription: " subscription
 read -p "Docker Username: " docker_user
 read -p "Docker Password: " docker_pass
 read -p "DKube Version (3.2.0.1): " dkube_version
@@ -287,14 +288,24 @@ kubectl patch svc istio-ingressgateway -n istio-system  -p '{"spec":{"type":"Loa
 sleep 30
 kubectl -n istio-system get svc istio-ingressgateway
 
+rm tanzu-operations-us-east-1.pem
+account_key=$(az keyvault secret show --name tanzustorage-key --subscription $subscription --vault-name tanzuvault --query value)
+az storage blob download --account-name tanzustorage --container-name aws --name tanzu-operations-us-east-1.pem --account-key $account_key -f tanzu-operations-us-east-1.pem
+
+chmod 400 tanzu-operations-us-east-1.pem
+
 aws ec2 describe-instances | jq -r '.Reservations[].Instances[] | .PublicIpAddress'+\"\ \"+(.Tags[] | select(.Key == \"Name\").Value) | grep bastion
 
 read -p "Bastion IP: " bastion_ip
 
-ssh $bastion_ip -i 
+aws ec2 describe-instances | jq -r '.Reservations[].Instances[] | .PrivateIpAddress'+\"\ \"+(.Tags[] | select(.Key == \"Name\").Value) | grep gpu
+
 echo
-echo "*** LOG INTO BASTION ***"
+cat tanzu-operations-us-east-1.pem
 echo
-echo "*** git clone https://github.com/nycpivot/tanzu-dkube.git ***"
-echo
+
+ssh $bastion_ip -i tanzu-operations-us-east-1.pem
+git clone https://github.com/nycpivot/tanzu-dkube.git
+
+bash tanzu-dkube/22-gpu-setup.sh
 
