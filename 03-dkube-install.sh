@@ -1,14 +1,14 @@
 #!bin/bash
 
-read -p "Azure subscription: " subscription
-read -p "Docker Username: " docker_user
-read -p "Docker Password: " docker_pass
-read -p "DKube Version (3.2.0.1): " dkube_version
+#read -p "Azure subscription: " subscription
+#read -p "Docker Username: " docker_user
+#read -p "Docker Password: " docker_pass
+#read -p "DKube Version (3.2.0.1): " dkube_version
 
-if [[ -z $dkube_version ]]
-then
-	dkube_version=3.2.0.1
-fi
+subscription=nycpivot
+docker_user=lucifer001
+docker_pass=lucifer@dkube
+dkube_version=3.2.0.1
 
 sudo docker login -u $docker_user -p $docker_pass
 sudo docker run --rm -it -v $HOME/.dkube:/root/.dkube ocdr/dkubeadm:${dkube_version} init
@@ -293,19 +293,3 @@ account_key=$(az keyvault secret show --name tanzustorage-key --subscription $su
 az storage blob download --account-name tanzustorage --container-name aws --name tanzu-operations-us-east-1.pem --account-key $account_key -f tanzu-operations-us-east-1.pem
 
 chmod 400 tanzu-operations-us-east-1.pem
-
-aws ec2 describe-instances | jq -r '.Reservations[].Instances[] | .PublicIpAddress'+\"\ \"+(.Tags[] | select(.Key == \"Name\").Value) | grep bastion
-
-read -p "Bastion IP: " bastion_ip
-
-aws ec2 describe-instances | jq -r '.Reservations[].Instances[] | .PrivateIpAddress'+\"\ \"+(.Tags[] | select(.Key == \"Name\").Value) | grep gpu
-
-echo
-cat tanzu-operations-us-east-1.pem
-echo
-
-ssh $bastion_ip -i tanzu-operations-us-east-1.pem
-git clone https://github.com/nycpivot/tanzu-dkube.git
-
-bash tanzu-dkube/22-gpu-setup.sh
-

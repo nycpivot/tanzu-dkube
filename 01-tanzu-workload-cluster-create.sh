@@ -1,26 +1,17 @@
 read -p "Management Cluster Name: " mgmt_cluster_name
 read -p "Workload Cluster Name: " workload_cluster_name
-read -p "Bastion Host Enabled (true/false): " bastion_enabled
-read -p "AWS Region Code (us-east-1): " aws_region_code
+#read -p "Bastion Host Enabled (true/false): " bastion_enabled
+#read -p "AWS Region Code (us-east-1): " aws_region_code
 
-if [[ -z $bastion_enabled ]]
-then
-	bastion_enabled=false
-fi
-
-if [[ -z $aws_region_code ]]
-then
-	aws_region_code=us-east-1
-fi
-
-#suffix=$(echo $RANDOM | md5sum | head -c 20)
-#workload_cluster_name=${workload_cluster_name}-${suffix}
+bastion_enabled=true
+aws_region_code=us-east-1
 
 export AWS_REGION=${aws_region_code}
 
 #GET SSH KEY
-aws ec2 describe-key-pairs
-read -p "Input Key Name: " ssh_key_name
+#aws ec2 describe-key-pairs
+#read -p "Input Key Name: " ssh_key_name
+ssh_key_name=tanzu-operations-us-east-1
 
 #GET VPC ID
 vpc_filters="Name=tag:Name,Values=${mgmt_cluster_name}-vpc"
@@ -108,7 +99,7 @@ tanzu cluster kubeconfig get $workload_cluster_name --admin --export-file ${work
 
 #TAG THE PUBLIC SUBNET TO BE ABLE TO CREATE ELBs
 #aws ec2 delete-tags --resources YOUR-PUBLIC-SUBNET-ID-OR-IDS
-aws ec2 create-tags --resources $public_subnet_id --tags Key=kubernetes.io/cluster/${workload_cluster_name},Value=shared
+#aws ec2 create-tags --resources $public_subnet_id --tags Key=kubernetes.io/cluster/${workload_cluster_name},Value=shared
 
 
-echo CONFIGURE NFS ON EFS
+#echo CONFIGURE NFS ON EFS

@@ -1,6 +1,7 @@
 #!bin/bash
 
-read -p "Cluster Name: " cluster_name
+#read -p "Cluster Name: " cluster_name
+cluster_name=tanzu-dkube
 
 kubectl config use-context ${cluster_name}-admin@${cluster_name}
 

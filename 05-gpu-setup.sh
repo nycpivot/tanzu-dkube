@@ -77,9 +77,9 @@ STORAGE_CEPH_PATH=/var/lib/rook
 user=ubuntu
 EOF
 
-rm ssh-rsa
-rm ssh-rsa.pub
+sudo rm ssh-rsa
+sudo rm ssh-rsa.pub
 
-vim ssh-rsa
+sudo vim ssh-rsa
 
 sudo ./dkubeadm node setup
