@@ -37,12 +37,12 @@ echo
 pe "kubectl get pods"
 echo
 
-pe "tmc clustergroup namespace-quota-policy create -f tmc/configs/quota-policy.yaml --dry-run"
+pe "tmc clustergroup namespace-quota-policy create -f tanzu-dkube/configs/quota-policy.yaml --dry-run"
 echo
 
 pe "clear"
 
-pe "tmc clustergroup namespace-quota-policy create -f tmc/configs/quota-policy.yaml"
+pe "tmc clustergroup namespace-quota-policy create -f tanzu-dkube/configs/quota-policy.yaml"
 echo
 
 #QUOTA POLICY
