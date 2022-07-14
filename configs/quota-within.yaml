@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quota-within
+  labels:
+    app: quota-within
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quota-within
+  template:
+    metadata:
+      labels:
+        app: quota-within
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "100m"
+          limits:
+            memory: "1Gi"
+            cpu: "250m"
