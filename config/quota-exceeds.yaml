@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quota-exceeds
+  labels:
+    app: quota-exceeds
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quota-exceeds
+  template:
+    metadata:
+      labels:
+        app: quota-exceeds
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        resources:
+          requests:
+            memory: "1G"
+            cpu: "100m"
+          limits:
+            memory: "2G"
+            cpu: "500m"

@@ -10,7 +10,7 @@ echo
 cat tanzu-operations-us-east-1.pem
 echo
 
-ssh $bastion_ip -i tanzu-operations-us-east-1.pem
+ssh ubuntu@${bastion_ip} -i tanzu-operations-us-east-1.pem
 git clone https://github.com/nycpivot/tanzu-dkube.git
 
 bash tanzu-dkube/05-gpu-setup.sh
