@@ -24,24 +24,11 @@ TYPE_SPEED=20
 # hide the evidence
 clear
 
-development_cluster_group=development-cluster-group
-development_cluster=tanzu-dkube-admin@tanzu-dkube
-
-DEMO_PROMPT="${GREEN}➜ TMC ${CYAN}\W "
+DEMO_PROMPT="${GREEN}➜ TKG ${CYAN}\W "
 echo
 
-#CREATE PRODUCTION CLUSTER GROUP
-pe "tmc clustergroup create --name ${development_cluster_group}"
+pe "tanzu management-cluster get"
 echo
 
-#ATTACH PRODUCTION CLUSTER MANUALLY
-pe "kubectl config use-context ${development_cluster}"
+pe "tanzu cluster list"
 echo
-
-read -p "Retrieve command from portal: " attach_command
-
-pe "${attach_command}"
-echo
-
-pe "clear"
-
