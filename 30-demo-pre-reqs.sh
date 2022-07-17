@@ -27,6 +27,15 @@ clear
 development_cluster_group=development-cluster-group
 development_cluster=tanzu-dkube-admin@tanzu-dkube
 
+DEMO_PROMPT="${GREEN}➜ TKG ${CYAN}\W "
+echo
+
+pe "tanzu management-cluster get"
+echo
+
+pe "tanzu cluster list"
+echo
+
 
 DEMO_PROMPT="${GREEN}➜ TMC ${CYAN}\W "
 echo
